@@ -44,6 +44,11 @@ pca.fit(data)
 explained_var = pca.explained_variance_
 print 'top 10 explained variance: ', explained_var[:10]
 
+#pca = PCA().fit(digits.data)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel('number of components')
+plt.ylabel('cumulative explained variance');
+
 components = pca.components_[:2,:]
 
 # -- some viz
