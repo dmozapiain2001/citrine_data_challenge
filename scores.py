@@ -66,6 +66,8 @@ def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,cr
 	test_results_auc=[]
 	test_accu=[]
 	test_precision=[]
+	test_recall=[]
+	train_recall=[]
 	features=[]
 	for estimator in n_estimators:
 		for cr in criterion:
@@ -81,11 +83,14 @@ def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,cr
 					train_pred = rfc.predict(X_train)
     
 					precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
+					train_recall.append(recall)
 					train_results_auc.append(roc_auc)
     
 					y_pred = rfc.predict(X_test)
     
 					precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+
+					test_recall.append(recall)
 					test_results_auc.append(roc_auc)
 					test_accu.append(accuracy)
 					test_precision.append(precision)
@@ -96,9 +101,11 @@ def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,cr
 	df4= pd.DataFrame({'test_results_auc':test_results_auc})
 	df5= pd.DataFrame({'test_accuracy':test_accu})
 	df6= pd.DataFrame( {'test_precision':test_precision})
+	df8= pd.DataFrame( {'train_recall':train_recall})
+	df9= pd.DataFrame( {'test_recall':test_recall})
 	df7= pd.DataFrame( {'features':features})
 
-	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df7],axis=1)
+	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df8,df9,df7],axis=1)
 	return df_results
 
 def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_depth,split):
@@ -259,7 +266,7 @@ def hp_tune_log_reg(X_train,y_train,X_test,y_test,Cv_folds,criterion,):
 		test_results_auc.append(roc_auc)
 		test_accu.append(accuracy)
 		test_precision.append(precision)
-		features.append([cr,g,c])
+		features.append([cr])
 	df1= pd.DataFrame({'train_results_mean':train_results_mean})
 	df2= pd.DataFrame({'train_results_std':train_results_std})
 	df3= pd.DataFrame({'train_results_auc':train_results_auc})
@@ -270,6 +277,77 @@ def hp_tune_log_reg(X_train,y_train,X_test,y_test,Cv_folds,criterion,):
 
 	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df7],axis=1)
 	return df_results
+
+
+
+
+def adjusted_classes(y_scores, t):
+    """
+    This function adjusts class predictions based on the prediction threshold (t).
+    Will only work for binary classification problems.
+    """
+    return [1 if y >= t else 0 for y in y_scores]
+
+def precision_recall_threshold(y_scores,y_test,p, r, thresholds):
+    """
+    plots the precision recall curve and shows the current value for each
+    by identifying the classifier's threshold (t).
+    """
+    
+    # generate new class predictions based on the adjusted_classes
+    # function above and view the resulting confusion matrix.
+    y_pred_adj = adjusted_classes(y_scores, t)
+    print(pd.DataFrame(confusion_matrix(y_test, y_pred_adj),
+                       columns=['pred_neg', 'pred_pos'], 
+                       index=['neg', 'pos']))
+    
+    # plot the curve
+    plt.figure(figsize=(8,8))
+    plt.title("Precision and Recall curve ^ = current threshold")
+    plt.step(r, p, color='r', alpha=0.2,
+             where='post')
+    plt.fill_between(r, p, step='post', alpha=0.2,
+                     color='b')
+    plt.ylim([0.5, 1.01]);
+    plt.xlim([0.5, 1.01]);
+    plt.xlabel('Recall');
+    plt.ylabel('Precision');
+    
+    # plot the current threshold on the line
+    close_default_clf = np.argmin(np.abs(thresholds - t))
+    plt.plot(r[close_default_clf], p[close_default_clf], '^', c='k',
+            markersize=15)
+    plt.show()
+
+def plot_precision_recall_vs_threshold(precisions, recalls, thresholds):
+    """
+    Modified from:
+    Hands-On Machine learning with Scikit-Learn
+    and TensorFlow; p.89
+    """
+    plt.figure(figsize=(8, 8))
+    plt.title("Precision and Recall Scores as a function of the decision threshold")
+    plt.plot(thresholds, precisions[:-1], "b--", label="Precision")
+    plt.plot(thresholds, recalls[:-1], "g-", label="Recall")
+    plt.ylabel("Score")
+    plt.xlabel("Decision Threshold")
+    plt.legend(loc='best')
+
+def plot_roc_curve(fpr, tpr, label=None):
+    """
+    The ROC curve, modified from 
+    Hands-On Machine learning with Scikit-Learn and TensorFlow; p.91
+    """
+    plt.figure(figsize=(8,8))
+    plt.title('ROC Curve')
+    plt.plot(fpr, tpr, linewidth=2, label=label)
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.axis([-0.005, 1, 0, 1.005])
+    plt.xticks(np.arange(0,1, 0.05), rotation=90)
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate (Recall)")
+    plt.legend(loc='best')
+
         
     
 

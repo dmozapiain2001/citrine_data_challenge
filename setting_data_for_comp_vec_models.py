@@ -1,6 +1,4 @@
 
-# coding: utf-8
-
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -93,13 +91,83 @@ df_tmp_stable['Stable_compunds']=np.logical_not(y_all.sum(axis=1)==0).astype(int
 df_train=pd.concat([df_train, df_tmp_stable],axis=1)
 print(df_train.shape)
 
-df_train.head()
+
+
+
+
+
+# In[4]:
+
+
+print(names)
+
+
+# ## Now getting the Output for each Vector Component
+# 
+
+# In[ ]:
+
+
+## Observing how many element pairs produce a stable compound per % and overall
+
+y_all=df_train[stab_vec_list]
+
+for count in range(1,2):
+    
+    y = df_train[stab_vec_list[count]]
+    print(y.value_counts())
+
+    stable_comp=df_train.loc[y==1,['formulaA','formulaB']] # Find the elements that create a stable element in this vector component
+    print('Compound being analyzed is',stab_vec_list[count])
+    stable_comp_num=stable_comp.values
+    stable_A=np.unique(stable_comp_num[:,0])
+    stable_B=np.unique(stable_comp_num[:,1])
+    
+    df_unique= pd.DataFrame()
+
+    y_unique= pd.DataFrame()
+    
+    for cnt in range(stable_A.shape[0]):
+
+        df_tmp1=y.loc[df_train['formulaA']==stable_A[cnt]]
+        y_unique=pd.concat([y_unique, df_tmp1],axis=0)
+        
+        df_tmp=df_train.loc[df_train['formulaA']==stable_A[cnt]]
+        df_unique=pd.concat([df_unique, df_tmp],axis=0)
+        
+
+    
+
+
+    for cnt in range(stable_B.shape[0]):
+        df_tmp1=y.loc[df_train['formulaB']==stable_B[cnt]]
+        y_unique=pd.concat([y_unique, df_tmp1],axis=0)
+        
+        df_tmp=df_train.loc[df_train['formulaB']==stable_B[cnt]]
+        df_unique=pd.concat([df_unique, df_tmp],axis=0)
+
+    
+    y_unique=y.iloc[y_unique.index.unique()]
+    df_unique=df_train.iloc[df_unique.index.unique()]
+    print(y_unique.value_counts())
+    print('The elements in these compounds create a stable compound for this component of the stability vector:',y_unique.shape)
+    
+    
+    y_stable=y_unique.loc[np.logical_not(y_all.sum(axis=1)==0)]
+    df_stable=df_unique.loc[np.logical_not(y_all.sum(axis=1)==0)]
+    print(y_stable.value_counts())
+    print('The elements in these compounds create a stable compound for this component of the stability vector and create at least one stable compound:',y_stable.shape)
+
+
+
 
 # Pearson Correlation to Identify the features that influence the most on the output 
 print('Pearson Correlation has been calculated to build the model in the most relevant features ....')
+X_train_new=df_stable[feature_cols] #This means we will only train on the elements that create a stable compound for this component of the stability vector and have at least one stable compound
 
-X_train_new=df_train[feature_cols]
-y_new=df_train['Stable_compunds']
+y_new=y_stable
+print('Number of Results to train on:',y_new.shape)
+print('Number of Training Features before Pearson correlation:', X_train_new.shape[1])
 
 corr_df=pd.concat([X_train_new, y_new],axis=1)
 a=corr_df.corr()
@@ -109,7 +177,7 @@ a=corr_df.corr()
 
 thr=.1
 
-corr_variables=list(a[a['Stable_compunds'].abs()>thr].index)
+corr_variables=list(a[a[stab_vec_list[count]].abs()>thr].index)
 
 del(corr_variables[-1])
 
@@ -119,9 +187,9 @@ print('Pearson Correlation has identified', len(corr_variables), 'with ', str(th
 ## Normalization of Input Data
 
 ## Using Un-normalized data as input
-X_train_new=df_train[corr_variables]
+X_train_new=df_stable[corr_variables]
 
-print(X_train_new.shape)
+print('Number of Training Features after Pearson correlation:', X_train_new.shape[1])
 
 
 # Normalizing such that the magnitude is one
@@ -153,10 +221,10 @@ print(X_train_new_m1_p1.shape)
 
 
 # Using PCA as input
-X_train_4_PCA=df_train[feature_cols]
-print(X_train_4_PCA.shape)
+X_train_4_PCA=df_stable[feature_cols]
+indx_4_PC=X_train_4_PCA.index
 X_train_new_mag_1_PCA=normalize(X_train_4_PCA, axis=1)
-print(X_train_new_mag_1_PCA.shape)
+
 
 pca = PCA()
 pca.fit(X_train_new_mag_1_PCA)
@@ -166,35 +234,38 @@ X_train_new_PCA=new_data
 
 print(X_train_new_PCA.shape)
 
-
 ## Using Pearson Correlation in PCA
-df1= pd.DataFrame(data=X_train_new_PCA)
+df1= pd.DataFrame(data=X_train_new_PCA, index=indx_4_PC)
 print(df1.shape)
-
 
 corr_df_PCA=pd.concat([df1, y_new],axis=1)
 
-print(corr_df_PCA.shape)
+
 a_PCA=corr_df_PCA.corr()
-#a_PCA['Stable_compunds'].hist(bins=7, figsize=(18, 12), xlabelsize=10)
 
+thr=.05
+corr_variables_PCA=list(a_PCA[a_PCA[stab_vec_list[count]].abs()>thr].index)
 
-thr=.01
-corr_variables_PCA=list(a_PCA[a_PCA['Stable_compunds'].abs()>thr].index)
 
 del(corr_variables_PCA[-1])
 
+print('Pearson Correlation in PCA Space has identified', len(corr_variables_PCA), 'with ', str(thr) )
 
 X_train_PCA_PC=df1[corr_variables_PCA]
 
+print('Number of Training Features after Pearson correlation in PCA Space:', X_train_PCA_PC.shape[1])
 
 
-# ### First we will build a model to determine if the input elements will produce at least one stable compound
-
-y_new=df_train['Stable_compunds']
 
 
-# # Model Generation
+
+
+
+
+# ## Model Generation
+
+# In[ ]:
+
 
 print('Training Model Using Z-normalized Data')
 ## test-train split
@@ -205,7 +276,8 @@ X_train, X_test, y_train, y_test = train_test_split(X_train_new_Z_score, y_new,
 
 print(X_train.shape,y_train.shape)
 print(X_test.shape,y_test.shape)
-# ## Random Forest
+#X_train.head()
+
 
 
 
@@ -292,5 +364,4 @@ df_results_log_reg=scores.hp_tune_log_reg(X_train,y_train,X_test,y_test,10,crite
 
 print('This are the best Parameters for SVM :')
 print(df_results_log_reg[df_results_log_reg['test_accuracy']==df_results_log_reg['test_accuracy'].max()])
-
 
