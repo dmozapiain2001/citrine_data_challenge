@@ -205,21 +205,17 @@ X_train, X_test, y_train, y_test = train_test_split(X_train_new_Z_score, y_new,
 
 print(X_train.shape,y_train.shape)
 print(X_test.shape,y_test.shape)
-# ## Random Forest
-
-
-
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- Random Forest --')
 
 n_estimators = [50,100,200]
 criterion=['gini', 'entropy']
 bootstrap= [True, False]
-max_depth=[1,2,,5,10, 20,30]
+max_depth=[1,2,3,5,10, 20,30]
 
-min_samples_splits=[10 20 50 60 90 120]
-min_samples_leafs=[2 5 10 25 50 90 120]
-min_impurity_splits=[5e-7 1e-6 1e-5]
+min_samples_splits=[10, 20, 50, 60, 90 ,120]
+min_samples_leafs=[2 ,5, 10, 25 ,50, 90, 120]
+min_impurity_splits=[5e-7 ,1e-6, 1e-5]
 
 df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,10,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
@@ -241,9 +237,9 @@ criterion=['gini', 'entropy']
 max_depth=[10,20,30,50]
 split=['random','best']
 
-min_samples_splits=[10 20 50 60 90 120]
-min_samples_leafs=[2 5 10 25 50 90 120]
-min_impurity_splits=[5e-7 1e-6 1e-5]
+min_samples_splits=[10, 20 ,50 ,60 ,90, 120]
+min_samples_leafs=[2, 5, 10, 25, 50 ,90 ,120]
+min_impurity_splits=[5e-7, 1e-6, 1e-5]
 
 df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,10,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
@@ -299,5 +295,4 @@ df_results_log_reg=scores.hp_tune_log_reg(X_train,y_train,X_test,y_test,10,crite
 
 print('This are the best Parameters for SVM :')
 print(df_results_log_reg[df_results_log_reg['test_accuracy']==df_results_log_reg['test_accuracy'].max()])
-
 

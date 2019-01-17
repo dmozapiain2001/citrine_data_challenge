@@ -291,39 +291,30 @@ print(X_train.shape,y_train.shape)
 print(X_test.shape,y_test.shape)
 
 
-# # Initial Hyper Parameter Tuning to identify best Classifier and its values
-
-# In[ ]:
-
-
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- Random Forest --')
 
 n_estimators = [50,100,200]
 criterion=['gini', 'entropy']
 bootstrap= [True, False]
-max_depth=[10, 20,30]
+max_depth=[1,2,3,5,10, 20,30]
 
-df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,10,n_estimators,criterion,bootstrap,max_depth)
+min_samples_splits=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
+min_samples_leafs=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
+min_impurity_splits=[5e-7 ,1e-6, 1e-5]
 
-print('This are the best Parameters for Random Forest:')
-print(df_results_RF[df_results_RF['test_precision']==df_results_RF['test_precision'].max()])
+df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
-# Hyper-Parameter Search Grid Using 10-Fold CV and Test
-print(' -- Random Forest --')
 
-n_estimators = [50,100,200]
-criterion=['gini', 'entropy']
-bootstrap= [True, False]
-max_depth=[10, 20,30]
 
-df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,10,n_estimators,criterion,bootstrap,max_depth)
+
 
 print('This are the best Parameters for Random Forest:')
-print(df_results_RF[df_results_RF['test_precision']==df_results_RF['test_precision'].max()])
+print(df_results_RF[df_results_RF['test_accuracy']==df_results_RF['test_accuracy'].max()])
 
 
 # # Decision Trees
+
 
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- Decision Trees --')
@@ -332,13 +323,18 @@ criterion=['gini', 'entropy']
 max_depth=[10,20,30,50]
 split=['random','best']
 
-df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,10,criterion,max_depth,split)
+min_samples_splits=[10, 20 ,50 ,60 ,90, 120]
+min_samples_leafs=[2, 5, 10, 25, 50 ,90 ,120]
+min_impurity_splits=[5e-7, 1e-6, 1e-5]
+
+df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
 print('This are the best Parameters for Decision Tree:')
-print(df_results_DT[df_results_DT['test_precision']==df_results_DT['test_precision'].max()])
+print(df_results_DT[df_results_DT['test_accuracy']==df_results_DT['test_accuracy'].max()])
 
 
 # # KNN 
+
 
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- KNN --')
@@ -349,11 +345,15 @@ distances = [1, 2, 3, 4, 5]
 
 df_results_KNN=scores.hp_tune_KNN(X_train,y_train,X_test,y_test,10,criterion,neighbors,distances)
 
+
+
+
 print('This are the best Parameters for KNN :')
-print(df_results_KNN[df_results_KNN['test_precision']==df_results_KNN['test_precision'].max()])
+print(df_results_KNN[df_results_KNN['test_accuracy']==df_results_KNN['test_accuracy'].max()])
 
 
 # # SVM
+
 
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- SVM --')
@@ -365,8 +365,10 @@ cs = [0.1,.5, 1, 3,10]
 df_results_SVM=scores.hp_tune_SVM(X_train,y_train,X_test,y_test,10,kernel,gammas,cs)
 
 
+
 print('This are the best Parameters for SVM :')
-print(df_results_SVM[df_results_SVM['test_precision']==df_results_SVM['test_precision'].max()])
+print(df_results_SVM[df_results_SVM['test_accuracy']==df_results_SVM['test_accuracy'].max()])
+
 
 # # Logistic Regression
 
@@ -378,7 +380,5 @@ criterion=['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
 df_results_log_reg=scores.hp_tune_log_reg(X_train,y_train,X_test,y_test,10,criterion)
 
 print('This are the best Parameters for SVM :')
-print(df_results_log_reg[df_results_log_reg['test_precision']==df_results_log_reg['test_precision'].max()])
+print(df_results_log_reg[df_results_log_reg['test_accuracy']==df_results_log_reg['test_accuracy'].max()])
 
-
-# # Boosting and Bagging of Best Performing Models
