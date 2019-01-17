@@ -58,7 +58,7 @@ def grid_search_wrapper(X_train,y_train,X_test,y_test,clf,param_grid,scorers,cv_
     return grid_search
 
 
-def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,criterion,bootstrap,max_depth):
+def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits):
 	print(' -- Random Forest --')
 	train_results_mean = []
 	train_results_std = []
@@ -73,28 +73,32 @@ def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,cr
 		for cr in criterion:
 			for boots in bootstrap:
 				for max_d in max_depth:
-					rfc = RandomForestClassifier(n_estimators=estimator,criterion=cr,bootstrap=boots,max_depth=max_d, class_weight={0:1-y_train.mean(), 1:y_train.mean()},random_state=0,n_jobs=-1)
-					all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
-					train_results_mean.append(all_accuracies.mean())
-					train_results_std.append(all_accuracies.std())
-    
-					rfc.fit(X_train, y_train)
-    
-					train_pred = rfc.predict(X_train)
-    
-					precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
-					train_recall.append(recall)
-					train_results_auc.append(roc_auc)
-    
-					y_pred = rfc.predict(X_test)
-    
-					precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+					for min_sample_sp in min_samples_splits:
+						for min_samples_le in min_samples_leafs:
+							for min_impurity_sp in min_impurity_splits:
 
-					test_recall.append(recall)
-					test_results_auc.append(roc_auc)
-					test_accu.append(accuracy)
-					test_precision.append(precision)
-					features.append([estimator,cr,boots,max_d])
+								rfc = RandomForestClassifier(n_estimators=estimator,criterion=cr,bootstrap=boots,max_depth=max_d, class_weight={0:1-y_train.mean(), 1:y_train.mean()},min_samples_split=min_sample_sp,min_samples_leaf=min_samples_le,min_impurity_decrease=min_impurity_sp,random_state=0,n_jobs=-1)
+								all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
+								train_results_mean.append(all_accuracies.mean())
+								train_results_std.append(all_accuracies.std())
+    
+								rfc.fit(X_train, y_train)
+    
+								train_pred = rfc.predict(X_train)
+    
+								precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
+								train_recall.append(recall)
+								train_results_auc.append(roc_auc)
+    
+								y_pred = rfc.predict(X_test)
+    
+								precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+
+								test_recall.append(recall)
+								test_results_auc.append(roc_auc)
+								test_accu.append(accuracy)
+								test_precision.append(precision)
+								features.append([estimator,cr,boots,max_d,min_sample_sp,min_samples_le,min_impurity_sp])
 	df1= pd.DataFrame({'train_results_mean':train_results_mean})
 	df2= pd.DataFrame({'train_results_std':train_results_std})
 	df3= pd.DataFrame({'train_results_auc':train_results_auc})
@@ -108,7 +112,7 @@ def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,cr
 	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df8,df9,df7],axis=1)
 	return df_results
 
-def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_depth,split):
+def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits):
 	print(' -- Decision Tree --')
 	train_results_mean = []
 	train_results_std = []
@@ -120,25 +124,28 @@ def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_d
 	for cr in criterion:
 		for max_d in max_depth:
 			for sp in split:
-				rfc = sklearn.tree.DecisionTreeClassifier(class_weight={0:1-y_train.mean(), 1:y_train.mean()}, criterion=cr,max_depth=max_d,random_state=0, splitter=sp)
-				all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
-				train_results_mean.append(all_accuracies.mean())
-				train_results_std.append(all_accuracies.std())
+				for min_sample_sp in min_samples_splits:
+						for min_samples_le in min_samples_leafs:
+							for min_impurity_sp in min_impurity_splits:
+								rfc = sklearn.tree.DecisionTreeClassifier(class_weight={0:1-y_train.mean(), 1:y_train.mean()}, criterion=cr,max_depth=max_d,random_state=0, splitter=sp,min_samples_split=min_sample_sp,min_samples_leaf=min_samples_le,min_impurity_decrease=min_impurity_sp,)
+								all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
+								train_results_mean.append(all_accuracies.mean())
+								train_results_std.append(all_accuracies.std())
     
-				rfc.fit(X_train, y_train)
+								rfc.fit(X_train, y_train)
     
-				train_pred = rfc.predict(X_train)
+								train_pred = rfc.predict(X_train)
     
-				precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
-				train_results_auc.append(roc_auc)
+								precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
+								train_results_auc.append(roc_auc)
     
-				y_pred = rfc.predict(X_test)
+								y_pred = rfc.predict(X_test)
     
-				precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
-				test_results_auc.append(roc_auc)
-				test_accu.append(accuracy)
-				test_precision.append(precision)
-				features.append([cr,max_d,sp])
+								precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+								test_results_auc.append(roc_auc)
+								test_accu.append(accuracy)
+								test_precision.append(precision)
+								features.append([cr,max_d,sp,min_sample_sp,min_samples_le,min_impurity_sp])
 	df1= pd.DataFrame({'train_results_mean':train_results_mean})
 	df2= pd.DataFrame({'train_results_std':train_results_std})
 	df3= pd.DataFrame({'train_results_auc':train_results_auc})
