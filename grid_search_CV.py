@@ -285,35 +285,35 @@ print(X_train.shape,y_train.shape)
 print(X_test.shape,y_test.shape)
 
 # Defining the Grid
-print(' -- Random Forest --')
-from sklearn.ensemble import RandomForestClassifier
+# print(' -- Random Forest --')
+# from sklearn.ensemble import RandomForestClassifier
 
-rfc = RandomForestClassifier(random_state=0,class_weight={0:1-y_train.mean(),1:y_train.mean()})
+# rfc = RandomForestClassifier(random_state=0,class_weight={0:1-y_train.mean(),1:y_train.mean()})
 
-from sklearn.model_selection import GridSearchCV  
+# from sklearn.model_selection import GridSearchCV  
 
-grid_param = {  
-    'n_estimators': [100, 300, 500, 800, 1000],
-    'criterion': [ 'entropy'],
-    'bootstrap': [True, False],
-    'max_depth':[1, 5, 10, 20],
-    'min_samples_split':[10,20 ,50 ,60 ,90 ,120],
-    'min_samples_leaf':[2 ,5 ,10, 25 ,50 ,90 ,120],
-    'min_impurity_decrease':[5e-7, 1e-6, 1e-5],
-}
+# grid_param = {  
+#     'n_estimators': [100, 300, 500, 800, 1000],
+#     'criterion': [ 'entropy'],
+#     'bootstrap': [True, False],
+#     'max_depth':[1, 5, 10, 20],
+#     'min_samples_split':[10,20 ,50 ,60 ,90 ,120],
+#     'min_samples_leaf':[2 ,5 ,10, 25 ,50 ,90 ,120],
+#     'min_impurity_decrease':[5e-7, 1e-6, 1e-5],
+# }
 
-gd_sr = GridSearchCV(estimator=rfc,  
-                     param_grid=grid_param,
-                     scoring='accuracy',
-                     cv=10,
-                     n_jobs=-1)
+# gd_sr = GridSearchCV(estimator=rfc,  
+#                      param_grid=grid_param,
+#                      scoring='accuracy',
+#                      cv=10,
+#                      n_jobs=-1)
 
-gd_sr.fit(X_train, y_train)
+# gd_sr.fit(X_train, y_train)
 
-best_parameters = gd_sr.best_params_  
-print(best_parameters) 
-best_result = gd_sr.best_score_  
-print(best_result) 
+# best_parameters = gd_sr.best_params_  
+# print(best_parameters) 
+# best_result = gd_sr.best_score_  
+# print(best_result) 
 
 print(' -- Decision Tree --')
 import sklearn.tree

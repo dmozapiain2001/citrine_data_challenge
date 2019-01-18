@@ -77,7 +77,7 @@ def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,cr
 						for min_samples_le in min_samples_leafs:
 							for min_impurity_sp in min_impurity_splits:
 
-								rfc = RandomForestClassifier(n_estimators=estimator,criterion=cr,bootstrap=boots,max_depth=max_d, class_weight={0:1-y_train.mean(), 1:y_train.mean()},min_samples_split=min_sample_sp,min_samples_leaf=min_samples_le,min_impurity_decrease=min_impurity_sp,random_state=0,n_jobs=-1)
+								rfc = RandomForestClassifier(n_estimators=estimator,criterion=cr,bootstrap=boots,max_depth=max_d, class_weight={0:y_train.mean(), 1:1-y_train.mean()},min_samples_split=min_sample_sp,min_samples_leaf=min_samples_le,min_impurity_decrease=min_impurity_sp,random_state=0,n_jobs=-1)
 								all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
 								train_results_mean.append(all_accuracies.mean())
 								train_results_std.append(all_accuracies.std())
@@ -127,7 +127,7 @@ def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_d
 				for min_sample_sp in min_samples_splits:
 						for min_samples_le in min_samples_leafs:
 							for min_impurity_sp in min_impurity_splits:
-								rfc = sklearn.tree.DecisionTreeClassifier(class_weight={0:1-y_train.mean(), 1:y_train.mean()}, criterion=cr,max_depth=max_d,random_state=0, splitter=sp,min_samples_split=min_sample_sp,min_samples_leaf=min_samples_le,min_impurity_decrease=min_impurity_sp,)
+								rfc = sklearn.tree.DecisionTreeClassifier(class_weight={0:y_train.mean(), 1:1-y_train.mean()}, criterion=cr,max_depth=max_d,random_state=0, splitter=sp,min_samples_split=min_sample_sp,min_samples_leaf=min_samples_le,min_impurity_decrease=min_impurity_sp)
 								all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
 								train_results_mean.append(all_accuracies.mean())
 								train_results_std.append(all_accuracies.std())
@@ -213,7 +213,7 @@ def hp_tune_SVM(X_train,y_train,X_test,y_test,Cv_folds,criterion,gammas,cs):
 	for cr in criterion:
 		for g in gammas:
 			for c in cs:
-				rfc =sklearn.svm.SVC(kernel=cr, gamma=g,C=c,random_state=0,class_weight={0:1-y_train.mean(), 1:y_train.mean()})
+				rfc =sklearn.svm.SVC(kernel=cr, gamma=g,C=c,random_state=0,class_weight={0:y_train.mean(), 1:1-y_train.mean()})
 				all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
 				train_results_mean.append(all_accuracies.mean())
 				train_results_std.append(all_accuracies.std())

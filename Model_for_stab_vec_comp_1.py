@@ -324,7 +324,8 @@ max_depth=[10,20,30,50]
 split=['random','best']
 
 min_samples_splits=[10, 20 ,50 ,60 ,90, 120]
-min_samples_leafs=[2, 5, 10, 25, 50 ,90 ,120]
+min_samples_splits=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
+min_samples_leafs=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
 min_impurity_splits=[5e-7, 1e-6, 1e-5]
 
 df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
