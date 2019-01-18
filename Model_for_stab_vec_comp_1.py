@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 import scores
 
 
-# In[2]:
+# In[14]:
 
 
 
@@ -35,8 +35,8 @@ for files_txts in os.listdir(path_f_1):
         #print(files_txts)
         names.append(files_txts)
         
-path_train=os.path.join(path_f_1, names[0])
-path_test=os.path.join(path_f_1, names[1])
+path_train=os.path.join(path_f_1, names[1])
+path_test=os.path.join(path_f_1, names[0])
 
 df_train=pd.read_csv(path_train)
 df_train.shape
@@ -62,30 +62,8 @@ feature_cols=list(df_train)
 
 print(df_train.shape)
 
-csvfile = csv.reader(open(path_train,'r'))
-header = next(csvfile)
-
-formulaA = []
-formulaB = []
-
-for row in csvfile:
-    formulaA.append(row[0])
-    formulaB.append(row[1])
-formulas = formulaA + formulaB
-formulas = list(set(formulas))
-
-# -- /!\ need to save the dict as the ordering may difer at each run
-formula2int = {}
-int2formula = {}
-for i, f in enumerate(formulas):
-    formula2int[f] = i
-    int2formula[i] = f
-
-formulaAint = np.array([formula2int[x] for x in formulaA])
-formulaBint = np.array([formula2int[x] for x in formulaB])
-
-df_train['formulaA']=formulaAint
-df_train['formulaB']=formulaBint
+df_train['formulaA']=df_train['formulaA_elements_Number']
+df_train['formulaB']=df_train['formulaB_elements_Number']
 
 df_train=pd.concat([df_train, df_tmp],axis=1)
 print(df_train.shape)
@@ -114,7 +92,7 @@ print(names)
 
 # ## Selecting Output for Component 1 of Stability Vector
 
-# In[6]:
+# In[15]:
 
 
 ## Observing how many element pairs produce a stable compound per % and overall
@@ -171,18 +149,18 @@ print('The elements in these compounds create a stable compound for this compone
 
 # ## Pearson Correlation and Input Normalization
 
-# In[11]:
+# In[17]:
 
 
 # Pearson Correlation to Identify the features that influence the most on the output 
 print('Pearson Correlation has been calculated to build the model in the most relevant features ....')
-X_train_new=df_stable[feature_cols] #This means we will only train on the elements that create a stable compound for this component of the stability vector and have at least one stable compound
+X_train_new_all=df_stable[feature_cols] #This means we will only train on the elements that create a stable compound for this component of the stability vector and have at least one stable compound
 
 y_new=y_stable
 print('Number of Results to train on:',y_new.shape)
-print('Number of Training Features before Pearson correlation:', X_train_new.shape[1])
+print('Number of Training Features before Pearson correlation:', X_train_new_all.shape[1])
 
-corr_df=pd.concat([X_train_new, y_new],axis=1)
+corr_df=pd.concat([X_train_new_all, y_new],axis=1)
 a=corr_df.corr()
 #a['Stable_compunds'].hist(bins=7, figsize=(18, 12), xlabelsize=10)
 
@@ -277,7 +255,7 @@ print('Number of Training Features after Pearson correlation in PCA Space:', X_t
 
 # ## Model Generation
 
-# In[12]:
+# In[9]:
 
 
 print('Training Model Using Z-normalized Data')
@@ -291,17 +269,48 @@ print(X_train.shape,y_train.shape)
 print(X_test.shape,y_test.shape)
 
 
+# In[10]:
+
+
+print(y_train.mean())
+
+
+# # Initial Hyper Parameter Tuning to identify best Classifier and its values
+
+# In[ ]:
+
+
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- Random Forest --')
 
-n_estimators = [50,100,200]
-criterion=['gini', 'entropy']
+#first pass
+n_estimators = [1,3,5,10,50,100]
+criterion=['entropy','gini']
 bootstrap= [True, False]
-max_depth=[1,2,3,5,10, 20,30]
+max_depth=[2,5,10]
 
-min_samples_splits=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
-min_samples_leafs=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
-min_impurity_splits=[5e-7 ,1e-6, 1e-5]
+min_samples_splits=[2,3,4,6,7,8,9,10,20]
+min_samples_leafs=[1,2,5,10]
+min_impurity_splits=[5e-7 ,1e-6]
+
+#second pass
+#n_estimators = [10,20,50]
+#criterion=['entropy']
+#bootstrap= [True, False]
+#max_depth=[5,6]
+#min_samples_splits=[2,3,4,5,6]
+#min_samples_leafs=[1,3,5]
+#min_impurity_splits=[3e-7, 5e-7,1e-6]
+
+#n_estimators = [1,3,5,8]
+#criterion=['entropy']
+#bootstrap= [True, False]
+#max_depth=[1,3,4]
+
+
+#min_samples_splits=[2,3,4,5]
+#min_samples_leafs=[1]
+#min_impurity_splits=[3e-7, 5e-7,8e-7]
 
 df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
@@ -310,7 +319,7 @@ df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,2,n_est
 
 
 print('This are the best Parameters for Random Forest:')
-print(df_results_RF[df_results_RF['test_accuracy']==df_results_RF['test_accuracy'].max()])
+print(df_results_RF[df_results_RF['test_accuracy']==df_results_RF['test_accuracy'].max()].head())
 
 
 # # Decision Trees
@@ -319,19 +328,35 @@ print(df_results_RF[df_results_RF['test_accuracy']==df_results_RF['test_accuracy
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- Decision Trees --')
 
-criterion=['gini', 'entropy']
-max_depth=[10,20,30,50]
-split=['random','best']
 
-min_samples_splits=[10, 20 ,50 ,60 ,90, 120]
-min_samples_splits=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
-min_samples_leafs=[1,2,3,4,6,7,8,9,10, 20, 50, 60, 90 ,120]
-min_impurity_splits=[5e-7, 1e-6, 1e-5]
+criterion=['entropy','gini']
+bootstrap= [True, False]
+max_depth=[1,2,5,10,100,250,1000]
+split=['random','best']
+min_samples_splits=[2,3,4,6,7,8,9,10]
+min_samples_leafs=[1]
+min_impurity_splits=[5e-7 ,1e-6]
+
+#second pass
+#criterion=['entropy']
+#max_depth=[10,11,15]
+#split=['random','best']
+#min_samples_splits=[2,3,4,6]
+#min_samples_leafs=[1,3,5]
+#min_impurity_splits=[3e-7, 5e-7,1e-6]
+
+#criterion=['entropy']
+#max_depth=[1,3,510]
+#split=['best']
+#min_samples_splits=[2,3]
+#min_samples_leafs=[1]
+#min_impurity_splits=[3e-7, 5e-7,8e-5]
 
 df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
 print('This are the best Parameters for Decision Tree:')
-print(df_results_DT[df_results_DT['test_accuracy']==df_results_DT['test_accuracy'].max()])
+print(df_results_DT[df_results_DT[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_DT['test_results_auc'].max()].head())
+
 
 
 # # KNN 
@@ -341,16 +366,16 @@ print(df_results_DT[df_results_DT['test_accuracy']==df_results_DT['test_accuracy
 print(' -- KNN --')
 
 criterion=['distance', 'uniform']
-neighbors=[2,3,5,7,10]
+neighbors=[1,2,3,10,50,100]
 distances = [1, 2, 3, 4, 5]
 
-df_results_KNN=scores.hp_tune_KNN(X_train,y_train,X_test,y_test,10,criterion,neighbors,distances)
+df_results_KNN=scores.hp_tune_KNN(X_train,y_train,X_test,y_test,2,criterion,neighbors,distances)
 
 
 
 
 print('This are the best Parameters for KNN :')
-print(df_results_KNN[df_results_KNN['test_accuracy']==df_results_KNN['test_accuracy'].max()])
+print(df_results_KNN[['test_results_auc','test_recall','features']][df_results_KNN['test_results_auc']==df_results_KNN['test_results_auc'].max()].head())
 
 
 # # SVM
@@ -360,15 +385,15 @@ print(df_results_KNN[df_results_KNN['test_accuracy']==df_results_KNN['test_accur
 print(' -- SVM --')
 
 kernel=['rbf', 'linear', 'poly', 'sigmoid']
-gammas = [0.1,.5, 1]
-cs = [0.1,.5, 1, 3,10]
+gammas = [.001,.1,1,3,5]
+cs = [.0001,.1,1,5,10,15,20]
 
 df_results_SVM=scores.hp_tune_SVM(X_train,y_train,X_test,y_test,10,kernel,gammas,cs)
 
 
 
 print('This are the best Parameters for SVM :')
-print(df_results_SVM[df_results_SVM['test_accuracy']==df_results_SVM['test_accuracy'].max()])
+print(df_results_SVM[['test_results_auc','test_recall','features']][df_results_SVM['test_results_auc']==df_results_SVM['test_results_auc'].max()].head())
 
 
 # # Logistic Regression
@@ -380,6 +405,7 @@ criterion=['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
 
 df_results_log_reg=scores.hp_tune_log_reg(X_train,y_train,X_test,y_test,10,criterion)
 
-print('This are the best Parameters for SVM :')
-print(df_results_log_reg[df_results_log_reg['test_accuracy']==df_results_log_reg['test_accuracy'].max()])
+print('This are the best Parameters for Logistic Regression :')
+print(df_results_log_reg[df_results_log_reg[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_log_reg['test_results_auc'].max()].head())
+
 

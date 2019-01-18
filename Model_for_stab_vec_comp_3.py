@@ -35,8 +35,8 @@ for files_txts in os.listdir(path_f_1):
         #print(files_txts)
         names.append(files_txts)
         
-path_train=os.path.join(path_f_1, names[0])
-path_test=os.path.join(path_f_1, names[1])
+path_train=os.path.join(path_f_1, names[1])
+path_test=os.path.join(path_f_1, names[0])
 
 df_train=pd.read_csv(path_train)
 df_train.shape
@@ -99,7 +99,7 @@ print(names)
 
 y_all=df_train[stab_vec_list]
 
-count=0
+count=2
     
 y = df_train[stab_vec_list[count]]
 print(y.value_counts())
@@ -166,7 +166,7 @@ a=corr_df.corr()
 
 ## Incorporating the Features that contribute the most based on a pearson correlation coefficient threshold
 
-thr=.135
+thr=.24
 
 corr_variables=list(a[a[stab_vec_list[count]].abs()>thr].index)
 

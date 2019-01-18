@@ -28,8 +28,8 @@ for files_txts in os.listdir(path_f_1):
         #print(files_txts)
         names.append(files_txts)
         
-path_train=os.path.join(path_f_1, names[0])
-path_test=os.path.join(path_f_1, names[1])
+path_train=os.path.join(path_f_1, names[1])
+path_test=os.path.join(path_f_1, names[0])
 
 df_train=pd.read_csv(path_train)
 df_train.shape
@@ -55,30 +55,8 @@ feature_cols=list(df_train)
 
 print(df_train.shape)
 
-csvfile = csv.reader(open(path_train,'r'))
-header = next(csvfile)
-
-formulaA = []
-formulaB = []
-
-for row in csvfile:
-    formulaA.append(row[0])
-    formulaB.append(row[1])
-formulas = formulaA + formulaB
-formulas = list(set(formulas))
-
-# -- /!\ need to save the dict as the ordering may difer at each run
-formula2int = {}
-int2formula = {}
-for i, f in enumerate(formulas):
-    formula2int[f] = i
-    int2formula[i] = f
-
-formulaAint = np.array([formula2int[x] for x in formulaA])
-formulaBint = np.array([formula2int[x] for x in formulaB])
-
-df_train['formulaA']=formulaAint
-df_train['formulaB']=formulaBint
+df_train['formulaA']=df_train['formulaA_elements_Number']
+df_train['formulaB']=df_train['formulaB_elements_Number']
 
 df_train=pd.concat([df_train, df_tmp],axis=1)
 print(df_train.shape)
