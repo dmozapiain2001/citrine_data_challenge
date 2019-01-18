@@ -78,7 +78,7 @@ def hp_tune_Random_Forest(X_train,y_train,X_test,y_test,Cv_folds,n_estimators,cr
 							for min_impurity_sp in min_impurity_splits:
 
 								rfc = RandomForestClassifier(n_estimators=estimator,criterion=cr,bootstrap=boots,max_depth=max_d, class_weight={0:y_train.mean(), 1:1-y_train.mean()},min_samples_split=min_sample_sp,min_samples_leaf=min_samples_le,min_impurity_decrease=min_impurity_sp,random_state=0,n_jobs=-1)
-								all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
+								all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds,scoring='roc_auc')
 								train_results_mean.append(all_accuracies.mean())
 								train_results_std.append(all_accuracies.std())
     
@@ -120,6 +120,8 @@ def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_d
 	test_results_auc=[]
 	test_accu=[]
 	test_precision=[]
+	test_recall=[]
+	train_recall=[]
 	features=[]
 	for cr in criterion:
 		for max_d in max_depth:
@@ -131,6 +133,7 @@ def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_d
 								all_accuracies = cross_val_score(estimator=rfc, X=X_train, y=y_train, cv=Cv_folds)
 								train_results_mean.append(all_accuracies.mean())
 								train_results_std.append(all_accuracies.std())
+
     
 								rfc.fit(X_train, y_train)
     
@@ -138,10 +141,13 @@ def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_d
     
 								precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
 								train_results_auc.append(roc_auc)
+								train_recall.append(recall)
     
 								y_pred = rfc.predict(X_test)
     
 								precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+
+								test_recall.append(recall)
 								test_results_auc.append(roc_auc)
 								test_accu.append(accuracy)
 								test_precision.append(precision)
@@ -152,9 +158,11 @@ def hp_tune_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_d
 	df4= pd.DataFrame({'test_results_auc':test_results_auc})
 	df5= pd.DataFrame({'test_accuracy':test_accu})
 	df6= pd.DataFrame( {'test_precision':test_precision})
+	df8= pd.DataFrame( {'train_recall':train_recall})
+	df9= pd.DataFrame( {'test_recall':test_recall})
 	df7= pd.DataFrame( {'features':features})
 
-	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df7],axis=1)
+	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df8,df9,df7],axis=1)
 	return df_results
 
 def hp_tune_KNN(X_train,y_train,X_test,y_test,Cv_folds,criterion,neighbors,distances):
@@ -166,6 +174,8 @@ def hp_tune_KNN(X_train,y_train,X_test,y_test,Cv_folds,criterion,neighbors,dista
 	test_results_auc=[]
 	test_accu=[]
 	test_precision=[]
+	test_recall=[]
+	train_recall=[]
 	features=[]
 	for cr in criterion:
 		for n_n in neighbors:
@@ -181,10 +191,13 @@ def hp_tune_KNN(X_train,y_train,X_test,y_test,Cv_folds,criterion,neighbors,dista
     
 				precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
 				train_results_auc.append(roc_auc)
+				train_recall.append(recall)
     
 				y_pred = rfc.predict(X_test)
     
 				precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+
+				test_recall.append(recall)
 				test_results_auc.append(roc_auc)
 				test_accu.append(accuracy)
 				test_precision.append(precision)
@@ -195,9 +208,11 @@ def hp_tune_KNN(X_train,y_train,X_test,y_test,Cv_folds,criterion,neighbors,dista
 	df4= pd.DataFrame({'test_results_auc':test_results_auc})
 	df5= pd.DataFrame({'test_accuracy':test_accu})
 	df6= pd.DataFrame( {'test_precision':test_precision})
+	df8= pd.DataFrame( {'train_recall':train_recall})
+	df9= pd.DataFrame( {'test_recall':test_recall})
 	df7= pd.DataFrame( {'features':features})
 
-	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df7],axis=1)
+	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df8,df9,df7],axis=1)
 	return df_results
 
 def hp_tune_SVM(X_train,y_train,X_test,y_test,Cv_folds,criterion,gammas,cs):
@@ -209,6 +224,8 @@ def hp_tune_SVM(X_train,y_train,X_test,y_test,Cv_folds,criterion,gammas,cs):
 	test_results_auc=[]
 	test_accu=[]
 	test_precision=[]
+	test_recall=[]
+	train_recall=[]
 	features=[]
 	for cr in criterion:
 		for g in gammas:
@@ -224,10 +241,13 @@ def hp_tune_SVM(X_train,y_train,X_test,y_test,Cv_folds,criterion,gammas,cs):
     
 				precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
 				train_results_auc.append(roc_auc)
+				train_recall.append(recall)
     
 				y_pred = rfc.predict(X_test)
     
 				precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+
+				test_recall.append(recall)
 				test_results_auc.append(roc_auc)
 				test_accu.append(accuracy)
 				test_precision.append(precision)
@@ -238,9 +258,11 @@ def hp_tune_SVM(X_train,y_train,X_test,y_test,Cv_folds,criterion,gammas,cs):
 	df4= pd.DataFrame({'test_results_auc':test_results_auc})
 	df5= pd.DataFrame({'test_accuracy':test_accu})
 	df6= pd.DataFrame( {'test_precision':test_precision})
+	df8= pd.DataFrame( {'train_recall':train_recall})
+	df9= pd.DataFrame( {'test_recall':test_recall})
 	df7= pd.DataFrame( {'features':features})
 
-	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df7],axis=1)
+	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df8,df9,df7],axis=1)
 	return df_results
 
 
@@ -253,6 +275,8 @@ def hp_tune_log_reg(X_train,y_train,X_test,y_test,Cv_folds,criterion,):
 	test_results_auc=[]
 	test_accu=[]
 	test_precision=[]
+	test_recall=[]
+	train_recall=[]
 	features=[]
 	for cr in criterion:
 		rfc =LogisticRegression(C=1,class_weight={0:1-y_train.mean(),1:y_train.mean()},random_state=0,solver=cr,max_iter=1000)
@@ -266,10 +290,13 @@ def hp_tune_log_reg(X_train,y_train,X_test,y_test,Cv_folds,criterion,):
     
 		precision,recall,F1,accuracy,confusion,roc_auc=scores(y_train,train_pred)
 		train_results_auc.append(roc_auc)
+		train_recall.append(recall)
     
 		y_pred = rfc.predict(X_test)
     
 		precision,recall,F1,accuracy,confusion,roc_auc=scores(y_test,y_pred)
+
+		test_recall.append(recall)
 		test_results_auc.append(roc_auc)
 		test_accu.append(accuracy)
 		test_precision.append(precision)
@@ -280,9 +307,11 @@ def hp_tune_log_reg(X_train,y_train,X_test,y_test,Cv_folds,criterion,):
 	df4= pd.DataFrame({'test_results_auc':test_results_auc})
 	df5= pd.DataFrame({'test_accuracy':test_accu})
 	df6= pd.DataFrame( {'test_precision':test_precision})
+	df8= pd.DataFrame( {'train_recall':train_recall})
+	df9= pd.DataFrame( {'test_recall':test_recall})
 	df7= pd.DataFrame( {'features':features})
 
-	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df7],axis=1)
+	df_results=pd.concat([df1, df2,df3,df4,df5,df6,df8,df9,df7],axis=1)
 	return df_results
 
 
