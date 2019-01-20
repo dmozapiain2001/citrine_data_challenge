@@ -1,0 +1,97 @@
+---------------------------------------
+Begin PBS Prologue Thu Jan 17 20:06:30 EST 2019
+Job ID:     23592387[5].shared-sched.pace.gatech.edu
+User ID:    dmo7
+Job name:   populate_Z_mat_23_HOT-5
+Queue:      flamel
+End PBS Prologue Thu Jan 17 20:06:30 EST 2019
+---------------------------------------
+Training Data is being read ....
+(2572, 98)
+(2572, 109)
+Training Data has been read and feature engineering is being performed....
+(2572, 110)
+['test_data.csv', 'training_data.csv']
+0    1988
+1     584
+Name: A55B, dtype: int64
+Compound being analyzed is A55B
+0    1961
+1     584
+Name: A55B, dtype: int64
+The elements in these compounds create a stable compound for this component of the stability vector: (2545,)
+0    644
+1    584
+Name: A55B, dtype: int64
+The elements in these compounds create a stable compound for this component of the stability vector and create at least one stable compound: (1228,)
+Pearson Correlation has been calculated to build the model in the most relevant features ....
+Number of Results to train on: (1228,)
+Number of Training Features before Pearson correlation: 98
+Pearson Correlation has identified 30 with  0.06
+Number of Training Features after Pearson correlation: 30
+(1228, 30)
+(1228, 30)
+(1228, 30)
+(1228, 30)
+(1228, 20)
+(1228, 20)
+Pearson Correlation in PCA Space has identified 7 with  0.05
+Number of Training Features after Pearson correlation in PCA Space: 7
+Training Model Using Z-normalized Data
+(1043, 30) (1043,)
+(185, 30) (185,)
+0.4813039309683605
+ -- Random Forest --
+ -- Random Forest --
+This are the best Parameters for Random Forest:
+     ...
+2588 ...
+2589 ...
+4250 ...
+4251 ...
+4258 ...
+
+[5 rows x 9 columns]
+ -- Decision Trees --
+ -- Decision Tree --
+This are the best Parameters for Decision Tree:
+    ...
+360 ...
+361 ...
+392 ...
+393 ...
+424 ...
+
+[5 rows x 9 columns]
+ -- KNN --
+ -- KNN Classifier --
+This are the best Parameters for KNN :
+    test_results_auc  test_recall           features
+21          0.744731     0.829268  [distance, 50, 2]
+ -- SVM --
+ -- SVM Classifier --
+This are the best Parameters for SVM :
+    test_results_auc  test_recall        features
+11          0.761662     0.804878  [rbf, 0.1, 10]
+ -- Logistic Regression --
+ -- Logistic Regression --
+This are the best Parameters for Logistic Regression :
+   train_results_mean  train_results_std     ...       test_recall     features
+0            0.608812           0.029125     ...           0.47561  [newton-cg]
+1            0.608812           0.029125     ...           0.47561      [lbfgs]
+3            0.608812           0.029125     ...           0.47561        [sag]
+4            0.608812           0.029125     ...           0.47561       [saga]
+
+[4 rows x 9 columns]
+---------------------------------------
+Begin PBS Epilogue Thu Jan 17 21:12:34 EST 2019
+Job ID:     23592387[5].shared-sched.pace.gatech.edu
+User ID:    dmo7
+Job name:   populate_Z_mat_23_HOT-5
+Resources:  neednodes=1:ppn=8,nodes=1:ppn=8,pmem=2gb,walltime=24:00:00
+Rsrc Used:  cput=00:27:52,energy_used=0,mem=206980kb,vmem=3819892kb,walltime=01:06:04
+Queue:      flamel
+Nodes:     
+rich133-c38-12-r.pace.gatech.edu
+End PBS Epilogue Thu Jan 17 21:12:34 EST 2019
+---------------------------------------

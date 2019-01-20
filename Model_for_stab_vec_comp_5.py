@@ -274,10 +274,6 @@ print(X_test.shape,y_test.shape)
 print(y_train.mean())
 
 
-# # Initial Hyper Parameter Tuning to identify best Classifier and its values
-
-# In[ ]:
-
 
 # Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- Random Forest --')
@@ -311,14 +307,14 @@ min_impurity_splits=[5e-7 ,1e-6]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-7]
 
-df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
+df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,10,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
 
 
 
 
 print('This are the best Parameters for Random Forest:')
-print(df_results_RF[df_results_RF['test_accuracy']==df_results_RF['test_accuracy'].max()].head())
+print(df_results_RF['features'][df_results_RF['test_results_auc']==df_results_RF['test_results_auc'].max()].head())
 
 
 # # Decision Trees
@@ -351,10 +347,10 @@ min_impurity_splits=[5e-7 ,1e-6]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-5]
 
-df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
+df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,10,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
 print('This are the best Parameters for Decision Tree:')
-print(df_results_DT[df_results_DT[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_DT['test_results_auc'].max()].head())
+print(df_results_DT['features'][df_results_DT['test_results_auc']==df_results_DT['test_results_auc'].max()].head())
 
 
 
@@ -368,7 +364,7 @@ criterion=['distance', 'uniform']
 neighbors=[1,2,3,10,50,100]
 distances = [1, 2, 3, 4, 5]
 
-df_results_KNN=scores.hp_tune_KNN(X_train,y_train,X_test,y_test,2,criterion,neighbors,distances)
+df_results_KNN=scores.hp_tune_KNN(X_train,y_train,X_test,y_test,10,criterion,neighbors,distances)
 
 
 
@@ -405,6 +401,5 @@ criterion=['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
 df_results_log_reg=scores.hp_tune_log_reg(X_train,y_train,X_test,y_test,10,criterion)
 
 print('This are the best Parameters for Logistic Regression :')
-print(df_results_log_reg[df_results_log_reg[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_log_reg['test_results_auc'].max()].head())
-
+print(df_results_log_reg[['test_results_auc','test_recall','features']][df_results_log_reg['test_results_auc']==df_results_log_reg['test_results_auc'].max()].head())
 

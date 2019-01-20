@@ -17,14 +17,14 @@ from network import Network
 parser = argparse.ArgumentParser()
 
 parser.add_argument_group('Optimization related arguments')
-parser.add_argument('-num_epochs', default=20, type=int, help='Epochs')
+parser.add_argument('-num_epochs', default=100, type=int, help='Epochs')
 parser.add_argument('-batch_size', default=64, type=int, help='Batch size')
 parser.add_argument('-lr', default=1e-3, type=float, help='Learning rate')
 parser.add_argument('-lr_decay_rate', default=0.9997592083, type=float, help='Decay for lr')
 parser.add_argument('-min_lr', default=5e-5, type=float, help='Minimum learning rate')
 parser.add_argument('-weight_init', default='xavier', choices=['xavier', 'kaiming'], help='Weight initialization strategy')
 parser.add_argument('-overfit', action='store_true', help='Overfit on 5 examples, meant for debugging')
-parser.add_argument('-gpuid', default=0, type=int, help='GPU id to use')
+parser.add_argument('-gpuid', default=-1, type=int, help='GPU id to use')
         
 parser.add_argument('-input_csv', default='./training_data.csv')
 parser.add_argument('-normalize', default=True)
