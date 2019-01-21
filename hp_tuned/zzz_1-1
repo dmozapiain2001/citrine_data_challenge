@@ -1,10 +1,10 @@
 ---------------------------------------
-Begin PBS Prologue Fri Jan 18 08:32:15 EST 2019
-Job ID:     23595707[1].shared-sched.pace.gatech.edu
+Begin PBS Prologue Sun Jan 20 18:32:35 EST 2019
+Job ID:     23606037[1].shared-sched.pace.gatech.edu
 User ID:    dmo7
 Job name:   populate_Z_mat_23_HOT-1
 Queue:      flamel
-End PBS Prologue Fri Jan 18 08:32:15 EST 2019
+End PBS Prologue Sun Jan 20 18:32:35 EST 2019
 ---------------------------------------
 /nv/hp22/dmo7/data/anaconda3/lib/python3.6/site-packages/sklearn/metrics/classification.py:1135: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 due to no predicted samples.
   'precision', 'predicted', average, warn_for)
@@ -172,21 +172,18 @@ Training Model Using Z-normalized Data
  -- Random Forest --
  -- Random Forest --
 This are the best Parameters for Random Forest:
-     ...
-2770 ...
-2771 ...
-4464 ...
-4465 ...
-
-[4 rows x 3 columns]
+3888    [50, gini, True, 2, 2, 1, 5e-07]
+3889    [50, gini, True, 2, 2, 1, 1e-06]
+3890    [50, gini, True, 2, 2, 2, 5e-07]
+3891    [50, gini, True, 2, 2, 2, 1e-06]
+3892    [50, gini, True, 2, 2, 5, 5e-07]
+Name: features, dtype: object
  -- Decision Trees --
  -- Decision Tree --
 This are the best Parameters for Decision Tree:
-   ...
-96 ...
-97 ...
-
-[2 rows x 3 columns]
+96    [entropy, 10, random, 2, 1, 5e-07]
+97    [entropy, 10, random, 2, 1, 1e-06]
+Name: features, dtype: object
  -- KNN --
  -- KNN Classifier --
 This are the best Parameters for KNN :
@@ -215,14 +212,14 @@ This are the best Parameters for Logistic Regression :
 3               0.5          0.0        [sag]
 4               0.5          0.0       [saga]
 ---------------------------------------
-Begin PBS Epilogue Fri Jan 18 12:01:11 EST 2019
-Job ID:     23595707[1].shared-sched.pace.gatech.edu
+Begin PBS Epilogue Sun Jan 20 22:01:31 EST 2019
+Job ID:     23606037[1].shared-sched.pace.gatech.edu
 User ID:    dmo7
 Job name:   populate_Z_mat_23_HOT-1
 Resources:  neednodes=1:ppn=8,nodes=1:ppn=8,pmem=2gb,walltime=24:00:00
-Rsrc Used:  cput=00:00:00,energy_used=0,mem=0kb,vmem=0kb,walltime=03:28:56
+Rsrc Used:  cput=00:00:00,energy_used=0,mem=0kb,vmem=0kb,walltime=03:28:55
 Queue:      flamel
 Nodes:     
 rich133-c38-10-l.pace.gatech.edu
-End PBS Epilogue Fri Jan 18 12:01:11 EST 2019
+End PBS Epilogue Sun Jan 20 22:01:31 EST 2019
 ---------------------------------------

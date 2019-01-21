@@ -1,10 +1,10 @@
 ---------------------------------------
-Begin PBS Prologue Fri Jan 18 08:32:15 EST 2019
-Job ID:     23595707[6].shared-sched.pace.gatech.edu
+Begin PBS Prologue Sun Jan 20 18:32:35 EST 2019
+Job ID:     23606037[6].shared-sched.pace.gatech.edu
 User ID:    dmo7
 Job name:   populate_Z_mat_23_HOT-6
 Queue:      flamel
-End PBS Prologue Fri Jan 18 08:32:15 EST 2019
+End PBS Prologue Sun Jan 20 18:32:35 EST 2019
 ---------------------------------------
 /nv/hp22/dmo7/data/anaconda3/lib/python3.6/site-packages/sklearn/metrics/classification.py:1135: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 due to no predicted samples.
   'precision', 'predicted', average, warn_for)
@@ -192,22 +192,21 @@ Training Model Using Z-normalized Data
  -- Random Forest --
  -- Random Forest --
 This are the best Parameters for Random Forest:
-     ...
-3616 ...
-3617 ...
-
-[2 rows x 3 columns]
+2522    [5, gini, False, 10, 2, 2, 5e-07]
+2523    [5, gini, False, 10, 2, 2, 1e-06]
+2530    [5, gini, False, 10, 3, 2, 5e-07]
+2531    [5, gini, False, 10, 3, 2, 1e-06]
+2538    [5, gini, False, 10, 4, 2, 5e-07]
+Name: features, dtype: object
  -- Decision Trees --
  -- Decision Tree --
 This are the best Parameters for Decision Tree:
-    ...
-358 ...
-359 ...
-390 ...
-391 ...
-422 ...
-
-[5 rows x 3 columns]
+358     [gini, 100, random, 6, 1, 5e-07]
+359     [gini, 100, random, 6, 1, 1e-06]
+390     [gini, 250, random, 6, 1, 5e-07]
+391     [gini, 250, random, 6, 1, 1e-06]
+422    [gini, 1000, random, 6, 1, 5e-07]
+Name: features, dtype: object
  -- KNN --
  -- KNN Classifier --
 This are the best Parameters for KNN :
@@ -230,14 +229,14 @@ This are the best Parameters for Logistic Regression :
 3               0.5          0.0        [sag]
 4               0.5          0.0       [saga]
 ---------------------------------------
-Begin PBS Epilogue Fri Jan 18 12:03:21 EST 2019
-Job ID:     23595707[6].shared-sched.pace.gatech.edu
+Begin PBS Epilogue Sun Jan 20 22:03:19 EST 2019
+Job ID:     23606037[6].shared-sched.pace.gatech.edu
 User ID:    dmo7
 Job name:   populate_Z_mat_23_HOT-6
 Resources:  neednodes=1:ppn=8,nodes=1:ppn=8,pmem=2gb,walltime=24:00:00
-Rsrc Used:  cput=01:23:14,energy_used=0,mem=208092kb,vmem=3814596kb,walltime=03:31:06
+Rsrc Used:  cput=01:21:57,energy_used=0,mem=210424kb,vmem=3815568kb,walltime=03:30:44
 Queue:      flamel
 Nodes:     
-rich133-c38-15-l.pace.gatech.edu
-End PBS Epilogue Fri Jan 18 12:03:21 EST 2019
+rich133-c38-14-l.pace.gatech.edu
+End PBS Epilogue Sun Jan 20 22:03:19 EST 2019
 ---------------------------------------
