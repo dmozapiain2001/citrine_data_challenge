@@ -326,7 +326,7 @@ learning_reates=[.0001,.001,.01,.1,1,10]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-5]
 
-df_results_DT_ADA_boost=hp_tune_ADABoost_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+df_results_DT_ADA_boost=scores.hp_tune_ADABoost_Decision_tree(X_train,y_train,X_test,y_test,Cv_folds,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
 
 print('This are the best Parameters for ADABOOST Decision Tree:')
 print(df_results_DT_ADA_boost['features'][df_results_DT_ADA_boost['test_results_auc']==df_results_DT_ADA_boost['test_results_auc'].max()].head())
@@ -364,7 +364,7 @@ learning_reates=[.0001,.001,.01,.1,1,10]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-5]
 
-df_results_DT_GRAD_boost=hp_tune_GRADBoost_Decision_tree(X_train,y_train,X_test,y_test,2,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+df_results_DT_GRAD_boost=scores.hp_tune_GRADBoost_Decision_tree(X_train,y_train,X_test,y_test,2,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
 print('This are the best Parameters for GRAD BOOST Decision Tree:')
 print(df_results_DT_GRAD_boost['features'][df_results_DT_GRAD_boost['test_results_auc']==df_results_DT_GRAD_boost['test_results_auc'].max()].head())
 

@@ -1,0 +1,65 @@
+---------------------------------------
+Begin PBS Prologue Mon Jan 21 14:23:00 EST 2019
+Job ID:     23607080[9].shared-sched.pace.gatech.edu
+User ID:    dmo7
+Job name:   populate_Z_mat_23_HOT-9
+Queue:      flamel
+End PBS Prologue Mon Jan 21 14:23:00 EST 2019
+---------------------------------------
+Training Data is being read ....
+(2572, 98)
+(2572, 109)
+Training Data has been read and feature engineering is being performed....
+(2572, 110)
+['test_data.csv', 'training_data.csv']
+0    2512
+1      60
+Name: A19B, dtype: int64
+Compound being analyzed is A19B
+0    1240
+1      60
+Name: A19B, dtype: int64
+The elements in these compounds create a stable compound for this component of the stability vector: (1300,)
+0    545
+1     60
+Name: A19B, dtype: int64
+The elements in these compounds create a stable compound for this component of the stability vector and create at least one stable compound: (605,)
+Pearson Correlation has been calculated to build the model in the most relevant features ....
+Number of Results to train on: (605,)
+Number of Training Features before Pearson correlation: 98
+Pearson Correlation has identified 30 with  0.13
+Number of Training Features after Pearson correlation: 30
+(605, 30)
+(605, 30)
+(605, 30)
+(605, 30)
+(605, 20)
+(605, 20)
+Pearson Correlation in PCA Space has identified 12 with  0.05
+Number of Training Features after Pearson correlation in PCA Space: 12
+Training Model Using Z-normalized Data
+(514, 30) (514,)
+(91, 30) (91,)
+0.09922178988326848
+ -- ADABoosting Random Forest --
+ -- ADA Boosting Random Forest --
+This are the best Parameters for ADABoosting with Random Forest:
+4    [1, entropy, True, 10, 2, 5, 5e-07, 1, 1]
+Name: features, dtype: object
+ -- ADABoosting Decision Trees --
+Traceback (most recent call last):
+  File "Boosting_for_Model_comp_9.py", line 329, in <module>
+    df_results_DT_ADA_boost=hp_tune_ADABoost_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+NameError: name 'hp_tune_ADABoost_Decision_tree' is not defined
+---------------------------------------
+Begin PBS Epilogue Mon Jan 21 15:43:17 EST 2019
+Job ID:     23607080[9].shared-sched.pace.gatech.edu
+User ID:    dmo7
+Job name:   populate_Z_mat_23_HOT-9
+Resources:  neednodes=1:ppn=8,nodes=1:ppn=8,pmem=2gb,walltime=24:00:00
+Rsrc Used:  cput=00:06:20,energy_used=0,mem=179880kb,vmem=3794336kb,walltime=01:20:17
+Queue:      flamel
+Nodes:     
+rich133-c38-14-r.pace.gatech.edu
+End PBS Epilogue Mon Jan 21 15:43:17 EST 2019
+---------------------------------------
