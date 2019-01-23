@@ -279,19 +279,19 @@ print(y_train.mean())
 print(' -- ADABoosting Random Forest --')
 
 #first pass
-n_estimators = [1,3,5,10,50,100]
-criterion=['entropy','gini']
-bootstrap= [True, False]
-max_depth=[2,5,10]
+n_estimators = [1]
+criterion=['entropy']
+bootstrap= [True]
+max_depth=[10]
 
-min_samples_splits=[2,3,4,6,7,8,9,10,20]
-min_samples_leafs=[1,2,5,10]
-min_impurity_splits=[5e-7 ,1e-6]
+min_samples_splits=[2]
+min_samples_leafs=[5]
+min_impurity_splits=[5e-7]
 
 num_estimators=[1 ,10,100,300,500,700,1000]
 learning_reates=[.0001,.001,.01,.1,1,10]
 
-df_results_RF_Aboost=scores.hp_tune_ADAboosting_RF(X_train,y_train,X_test,y_test,10,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+df_results_RF_Aboost=scores.hp_tune_ADAboosting_RF(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
 
 
 print('This are the best Parameters for ADABoosting with Random Forest:')
@@ -301,13 +301,13 @@ print(df_results_RF_Aboost['features'][df_results_RF_Aboost['test_results_auc']=
 print(' -- ADABoosting Decision Trees --')
 
 
-criterion=['entropy','gini']
-bootstrap= [True, False]
-max_depth=[1,2,5,10,100,250,1000]
-split=['random','best']
-min_samples_splits=[2,3,4,6,7,8,9,10]
+criterion=['entropy']
+
+max_depth=[5]
+split=['random']
+min_samples_splits=[6]
 min_samples_leafs=[1]
-min_impurity_splits=[5e-7 ,1e-6]
+min_impurity_splits=[5e-7]
 
 num_estimators=[1 ,10,100,300,500,700,1000]
 learning_reates=[.0001,.001,.01,.1,1,10]
@@ -327,7 +327,7 @@ learning_reates=[.0001,.001,.01,.1,1,10]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-5]
 
-df_results_DT_ADA_boost=scores.hp_tune_ADABoost_Decision_tree(X_train,y_train,X_test,y_test,10,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+df_results_DT_ADA_boost=scores.hp_tune_ADABoost_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
 
 print('This are the best Parameters for ADABOOST Decision Tree:')
 print(df_results_DT_ADA_boost['features'][df_results_DT_ADA_boost['test_results_auc']==df_results_DT_ADA_boost['test_results_auc'].max()].head())
@@ -338,12 +338,14 @@ print(' -- Gradient boosting Decision Trees --')
 
 
 
-bootstrap= [True, False]
-max_depth=[1,2,5,10,100,250,1000]
 
-min_samples_splits=[2,3,4,6,7,8,9,10]
+criterion=['entropy']
+
+max_depth=[5]
+split=['random']
+min_samples_splits=[6]
 min_samples_leafs=[1]
-min_impurity_splits=[5e-7 ,1e-6]
+min_impurity_splits=[5e-7]
 
 num_estimators=[1 ,10,100,300,500,700,1000]
 learning_reates=[.0001,.001,.01,.1,1,10]
@@ -363,7 +365,7 @@ learning_reates=[.0001,.001,.01,.1,1,10]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-5]
 
-df_results_DT_GRAD_boost=scores.hp_tune_GRADBoost_Decision_tree(X_train,y_train,X_test,y_test,10,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+df_results_DT_GRAD_boost=scores.hp_tune_GRADBoost_Decision_tree(X_train,y_train,X_test,y_test,2,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
 print('This are the best Parameters for GRAD BOOST Decision Tree:')
 print(df_results_DT_GRAD_boost['features'][df_results_DT_GRAD_boost['test_results_auc']==df_results_DT_GRAD_boost['test_results_auc'].max()].head())
 
@@ -399,7 +401,7 @@ min_impurity_splits=[5e-7 ,1e-6]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-7]
 
-df_results_extra_trees=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,10,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
+df_results_extra_trees=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
 
 
@@ -407,5 +409,4 @@ df_results_extra_trees=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_tes
 
 print('This are the best Parameters for Random Forest:')
 print(df_results_extra_trees['features'][df_results_extra_trees['test_results_auc']==df_results_extra_trees['test_results_auc'].max()].head())
-
 
