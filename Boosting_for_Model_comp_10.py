@@ -184,7 +184,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_train_new_Z_score, y_new,
 print(X_train.shape,y_train.shape)
 print(X_test.shape,y_test.shape)
 
-# Hyper-Parameter Search Grid Using 10-Fold CV and Test
+## Hyper-Parameter Search Grid Using 10-Fold CV and Test
 print(' -- Random Forest --')
 
 #first pass
@@ -216,14 +216,14 @@ min_impurity_splits=[5e-7 ,1e-6]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-7]
 
-df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
+df_results_RF=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,10,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
 
 
 
 
 print('This are the best Parameters for Random Forest:')
-print(df_results_RF[['test_results_auc','test_recall','features']][df_results_RF['test_accuracy']==df_results_RF['test_accuracy'].max()].head())
+print(df_results_RF['features'][df_results_RF['test_results_auc']==df_results_RF['test_results_auc'].max()].head())
 
 
 # # Decision Trees
@@ -256,10 +256,10 @@ min_impurity_splits=[5e-7 ,1e-6]
 #min_samples_leafs=[1]
 #min_impurity_splits=[3e-7, 5e-7,8e-5]
 
-df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
+df_results_DT=scores.hp_tune_Decision_tree(X_train,y_train,X_test,y_test,10,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits)
 
 print('This are the best Parameters for Decision Tree:')
-print(df_results_DT[df_results_DT[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_DT['test_results_auc'].max()].head())
+print(df_results_DT['features'][df_results_DT['test_results_auc']==df_results_DT['test_results_auc'].max()].head())
 
 
 
@@ -273,13 +273,13 @@ criterion=['distance', 'uniform']
 neighbors=[1,2,3,10,50,100]
 distances = [1, 2, 3, 4, 5]
 
-df_results_KNN=scores.hp_tune_KNN(X_train,y_train,X_test,y_test,2,criterion,neighbors,distances)
+df_results_KNN=scores.hp_tune_KNN(X_train,y_train,X_test,y_test,10,criterion,neighbors,distances)
 
 
 
 
 print('This are the best Parameters for KNN :')
-print(df_results_KNN[df_results_KNN[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_KNN['test_results_auc'].max()].head())
+print(df_results_KNN[['test_results_auc','test_recall','features']][df_results_KNN['test_results_auc']==df_results_KNN['test_results_auc'].max()].head())
 
 
 # # SVM
@@ -297,7 +297,7 @@ df_results_SVM=scores.hp_tune_SVM(X_train,y_train,X_test,y_test,10,kernel,gammas
 
 
 print('This are the best Parameters for SVM :')
-print(df_results_SVM[df_results_SVM[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_SVM['test_results_auc'].max()].head())
+print(df_results_SVM[['test_results_auc','test_recall','features']][df_results_SVM['test_results_auc']==df_results_SVM['test_results_auc'].max()].head())
 
 
 # # Logistic Regression
@@ -310,5 +310,141 @@ criterion=['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']
 df_results_log_reg=scores.hp_tune_log_reg(X_train,y_train,X_test,y_test,10,criterion)
 
 print('This are the best Parameters for Logistic Regression :')
-print(df_results_log_reg[df_results_log_reg[['test_results_auc','test_recall','features']]['test_results_auc']==df_results_log_reg['test_results_auc'].max()].head())
+print(df_results_log_reg[['test_results_auc','test_recall','features']][df_results_log_reg['test_results_auc']==df_results_log_reg['test_results_auc'].max()].head())
+
+# Hyper-Parameter Search Grid Using 10-Fold CV and Test
+print(' -- Bagging and Boosting Results --')
+print(' -- ADABoosting Random Forest --')
+
+#first pass
+n_estimators = [10,50]
+criterion=['entropy']
+bootstrap= [True]
+max_depth=[5,10]
+
+min_samples_splits=[2]
+min_samples_leafs=[5]
+min_impurity_splits=[5e-7]
+
+num_estimators=[1 ,10,100,300,500,700,1000]
+learning_reates=[.0001,.001,.01,.1,1,10]
+
+df_results_RF_Aboost=scores.hp_tune_ADAboosting_RF(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+
+
+print('This are the best Parameters for ADABoosting with Random Forest:')
+print(df_results_RF_Aboost['features'][df_results_RF_Aboost['test_results_auc']==df_results_RF_Aboost['test_results_auc'].max()].head())
+
+# Hyper-Parameter Search Grid Using 10-Fold CV and Test
+print(' -- ADABoosting Decision Trees --')
+
+
+criterion=['entropy']
+
+max_depth=[5]
+split=['random']
+min_samples_splits=[6]
+min_samples_leafs=[1]
+min_impurity_splits=[5e-7]
+
+num_estimators=[1 ,10,100,300,500,700,1000]
+learning_reates=[.0001,.001,.01,.1,1,10]
+
+#second pass
+#criterion=['entropy']
+#max_depth=[10,11,15]
+#split=['random','best']
+#min_samples_splits=[2,3,4,6]
+#min_samples_leafs=[1,3,5]
+#min_impurity_splits=[3e-7, 5e-7,1e-6]
+
+#criterion=['entropy']
+#max_depth=[1,3,510]
+#split=['best']
+#min_samples_splits=[2,3]
+#min_samples_leafs=[1]
+#min_impurity_splits=[3e-7, 5e-7,8e-5]
+
+df_results_DT_ADA_boost=scores.hp_tune_ADABoost_Decision_tree(X_train,y_train,X_test,y_test,2,criterion,max_depth,split,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+
+print('This are the best Parameters for ADABOOST Decision Tree:')
+print(df_results_DT_ADA_boost['features'][df_results_DT_ADA_boost['test_results_auc']==df_results_DT_ADA_boost['test_results_auc'].max()].head())
+
+
+# Hyper-Parameter Search Grid Using 10-Fold CV and Test
+print(' -- Gradient boosting Decision Trees --')
+
+
+
+
+criterion=['entropy']
+
+max_depth=[5]
+split=['random']
+min_samples_splits=[6]
+min_samples_leafs=[1]
+min_impurity_splits=[5e-7]
+
+num_estimators=[1 ,10,100,300,500,700,1000]
+learning_reates=[.0001,.001,.01,.1,1,10]
+
+#second pass
+#criterion=['entropy']
+#max_depth=[10,11,15]
+#split=['random','best']
+#min_samples_splits=[2,3,4,6]
+#min_samples_leafs=[1,3,5]
+#min_impurity_splits=[3e-7, 5e-7,1e-6]
+
+#criterion=['entropy']
+#max_depth=[1,3,510]
+#split=['best']
+#min_samples_splits=[2,3]
+#min_samples_leafs=[1]
+#min_impurity_splits=[3e-7, 5e-7,8e-5]
+
+df_results_DT_GRAD_boost=scores.hp_tune_GRADBoost_Decision_tree(X_train,y_train,X_test,y_test,2,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits,num_estimators,learning_reates)
+print('This are the best Parameters for GRAD BOOST Decision Tree:')
+print(df_results_DT_GRAD_boost['features'][df_results_DT_GRAD_boost['test_results_auc']==df_results_DT_GRAD_boost['test_results_auc'].max()].head())
+
+# Hyper-Parameter Search Grid Using 10-Fold CV and Test
+print(' -- hp_tune_Extra_trees --')
+
+#first pass
+n_estimators = [1,3,5,10,50,100]
+criterion=['entropy','gini']
+bootstrap= [True, False]
+max_depth=[2,5,10]
+
+min_samples_splits=[2,3,4,6,7,8,9,10,20]
+min_samples_leafs=[1,2,5,10]
+min_impurity_splits=[5e-7 ,1e-6]
+
+#second pass
+#n_estimators = [10,20,50]
+#criterion=['entropy']
+#bootstrap= [True, False]
+#max_depth=[5,6]
+#min_samples_splits=[2,3,4,5,6]
+#min_samples_leafs=[1,3,5]
+#min_impurity_splits=[3e-7, 5e-7,1e-6]
+
+#n_estimators = [1,3,5,8]
+#criterion=['entropy']
+#bootstrap= [True, False]
+#max_depth=[1,3,4]
+
+
+#min_samples_splits=[2,3,4,5]
+#min_samples_leafs=[1]
+#min_impurity_splits=[3e-7, 5e-7,8e-7]
+
+df_results_extra_trees=scores.hp_tune_Random_Forest(X_train,y_train,X_test,y_test,2,n_estimators,criterion,bootstrap,max_depth,min_samples_splits,min_samples_leafs,min_impurity_splits)
+
+
+
+
+
+print('This are the best Parameters for Random Forest:')
+print(df_results_extra_trees['features'][df_results_extra_trees['test_results_auc']==df_results_extra_trees['test_results_auc'].max()].head())
 
