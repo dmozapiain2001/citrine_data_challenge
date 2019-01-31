@@ -1,10 +1,10 @@
 #PBS -N populate_Z_mat_23_HOT
 #PBS -o zzz_bagging_${PBS_ARRAYID}
-#PBS -q iw-shared-6
+#PBS -q flamel
 #PBS -j oe
-#PBS -l nodes=4:ppn=8
+#PBS -l nodes=1:ppn=8
 #PBS -l pmem=2gb
-#PBS -l walltime=12:00:00
+#PBS -l walltime=48:00:00
 #PBS -m be
 #PBS -M pace1output1stats@gmail.com
 
