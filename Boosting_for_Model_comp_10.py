@@ -177,7 +177,7 @@ y_new=df_train['Stable_compunds']
 print('Training Model Using Z-normalized Data')
 ## test-train split
 X_train, X_test, y_train, y_test = train_test_split(X_train_new_Z_score, y_new,
-                                                    test_size=.1,
+                                                    test_size=.15,
                                                     shuffle=True,
                                                     random_state=42)
 
